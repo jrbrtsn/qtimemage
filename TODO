@@ -1,0 +1,14 @@
+Sat Dec 22 19:35:10 EST 2018
+John Robertson <john@rrci.com>
+
+I'd like to implement the 'Custom Report' where it would be possible to select
+one or more projects, and then pick the beginning and ending dates of the
+report.
+
+The database has a notes table, where the intention is to be able to associate
+notes with clients and projects, and perhaps a start/stop/pause event. It would
+be nice if to have this implemented into the GUI so it is useful.
+
+A "connector" to an invoicing service, like the  offered by Intuit would make
+monthly invoicing much easier
+

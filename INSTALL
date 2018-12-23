@@ -1,0 +1,16 @@
+Sat Dec 22 16:35:05 EST 2018
+John Robertson <john@rrci.com>
+
+At this time you must initialize the sqlite3 database before running qtimemage.
+You need to use 'schema.sql' and the sqlite3 command like so:
+
+   mkdir ~/.local/share/qtimemage
+
+   sqlite3 ~/.local/share/qtimemage/db <schema.sql
+
+Now you can launch qtimemage. It should install an icon in your system tray with
+a very useful menu. The intention of the GUI design is to used the system tray
+icon when simply start/stop/pausing timekeeping, or switching projects. There is
+no need to stop/pause the current project to switch to another, as the current
+project will be paused automatically.
+
