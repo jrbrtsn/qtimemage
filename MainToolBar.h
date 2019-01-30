@@ -49,6 +49,7 @@ private slots:
 private:
 
    void syncControls();
+   void sysTrayActivated(QSystemTrayIcon::ActivationReason reason);
 
    int64_t _visibleClient_id;
 
@@ -56,7 +57,8 @@ private:
           *_pause_act,
           *_stop_act,
           *_editClient_act,
-          *_deleteClient_act;
+          *_deleteClient_act,
+          *_chargeOther_act;
 
    ProjectComboBox *_project_cb;
 
@@ -64,6 +66,7 @@ private:
 
    QSystemTrayIcon *_sysTray;
    QTimer *_trayTimer;
+   QMenu *_trayMenu;
 };
 
 #endif // MAINTOOLBAR_H

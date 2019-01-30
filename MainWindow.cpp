@@ -19,7 +19,6 @@ static configRect S_geometry("MainWindow_geom", 20, 20, 600, 400);
 static configInt S_tabNdx("MainWindow_clientTab_ndx", 0);
 static configIntVec S_project_ids("ClientTab_project_ids");
 static configIntVec S_client_ids("ClientTab_client_ids");
-//static configInt S_GUI_isVisible("GUI_isVisible", 1);
 
 
 MainWindow::
@@ -195,11 +194,6 @@ populate_clients()
          acronym= cl->acronym();
          prj_id= S_project_ids.count() > i ? S_project_ids[i] : -1;
          _client.tb->addTab(acronym, client_id, prj_id);
-#if 0
-         if((prj= G.projectTable[prj_id]))
-            _client.tb->setTabIcon(i, prj->currentStateIcon());
-         break;
-#endif
          _client.tb->setTabIcon(i, cl->currentStateIcon());
       }
    }
@@ -219,12 +213,6 @@ populate_clients()
    currentClientChanged(ndx);
    /* Don't connect signal until we get to here */
    connect(_client.tb, SIGNAL(currentChanged(int)), SLOT(currentClientChanged(int)));
-
-#if 0
-   if(QSystemTrayIcon::isSystemTrayAvailable()) {
-      G.setVisibleTopLevelWindows(S_GUI_isVisible.val());
-   }
-#endif
 
 }
 
@@ -367,8 +355,6 @@ storeSettings()
      S_project_ids[i]= _client.tb->tabCurrentProject_id(i);
      S_client_ids[i]= _client.tb->tabClient_id(i);
   }
-
-//  S_GUI_isVisible= isVisible();
 
 }
 

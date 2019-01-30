@@ -665,57 +665,6 @@ project_remove(int64_t prj_id)
    
 }
 
-#if 0
-void
-ClientPage::
-event_insert(int64_t event_id)
-/*****************************************************************************
- * A event record was inserted in event_tbl
- */
-{
-#error
-   Event *ev= G.eventTable[event_id];
-   Q_ASSERT(ev);
-   int64_t prj_id= ev->project_id();
-
-   QTreeWidgetItem *item= _project.trw->findItem(prj_id);
-   if(!item) return;
-
-   Project *prj= G.projectTable[prj_id];
-   Q_ASSERT(prj);
-
-   item->setIcon(0, prj->currentStateIcon());
-
-}
-
-void
-ClientPage::
-event_update(int64_t event_id)
-/*****************************************************************************
- * A event record was updated in event_tbl
- */
-{
-#error
-   event_insert(event_id);
-   if(isVisible()) {
-      refreshTimes();
-   }
-}
-
-void
-ClientPage::
-event_remove(int64_t event_id)
-/*****************************************************************************
- * A event record was removed in event_tbl
- */
-{
-#error
-   event_insert(event_id);
-   if(isVisible()) {
-      refreshTimes();
-   }
-}
-#endif
 
 void
 ClientPage::
@@ -765,6 +714,7 @@ customReport()
  */
 {
    J_DBG_FN;
+   // FIXME: this needs to be implemented
 #if 0
    int rtn;
    /* Run the picker modally */

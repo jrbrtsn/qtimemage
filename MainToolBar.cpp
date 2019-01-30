@@ -24,6 +24,7 @@ MainToolBar(QWidget * parent)
  , _visibleClient_id(-1)
  , _recording_prj_id(-1)
  , _sysTray(NULL)
+ , _trayMenu(NULL)
 {
 
    /* When settings will get stored */
@@ -92,6 +93,9 @@ MainToolBar(QWidget * parent)
    _trayTimer->setSingleShot(true);
    _trayTimer->setInterval(100);
    _trayTimer->start();
+
+   /* Miscellaneous actions */
+   _chargeOther_act= addAction(QIcon::fromTheme("media-record"), "Charge Other Project", this, SLOT(chargeOtherProject()));
 }
 
 MainToolBar::
@@ -109,6 +113,47 @@ storeSettings()
   S_GUI_isVisible= isVisible();
 }
 
+void
+MainToolBar::
+sysTrayActivated(QSystemTrayIcon::ActivationReason reason)
+/***********************************************************
+ * System tray has been activated by user
+ */
+{
+
+
+   switch(reason) {
+      /*--- Show the context menu ---*/
+      case QSystemTrayIcon::Context:
+      case QSystemTrayIcon::Trigger:
+         {
+            QRect tray_geom(_sysTray->geometry());
+            QPoint tray_lrc(tray_geom.x() + tray_geom.width(), tray_geom.y() + tray_geom.height());
+            QSize menu_sz= _trayMenu->sizeHint();
+            QPoint menu_ulc(tray_lrc.x() - menu_sz.width(), tray_lrc.y());
+            _trayMenu->move(menu_ulc);
+            _trayMenu->show();
+        } break;
+
+      /*--- Start recording if possible ---*/
+      case QSystemTrayIcon::DoubleClick:
+#if 0
+         if(_record_act->isEnabled()) {
+            _record_act->triggered();
+         }
+#endif
+         break;
+
+      /*--- Bring up the 'charge other project' dialog ---*/
+      case QSystemTrayIcon::MiddleClick:
+         _chargeOther_act->trigger();
+         break;
+
+      case QSystemTrayIcon::Unknown:
+         qWarning("sysTrayActivated() called for Unknown reason!");
+         break;
+   }
+}
 
 void
 MainToolBar::
@@ -126,24 +171,28 @@ systray_install()
 
    _sysTray= new QSystemTrayIcon(QIcon::fromTheme("clock"), this);
 
-// NOTE: this signal is never sent under XFCE
-//      connect(_sysTray, &QSystemTrayIcon::activated, this,  &MainWindow::sysTrayActivated);
+   /* Arrange to find out when user activates systray icon */
+   connect(_sysTray, &QSystemTrayIcon::activated, this,  &MainToolBar::sysTrayActivated);
 
    /* XFCE will show a menu */
-   QMenu *menu= new QMenu;
-   QAction *act= menu->addAction("Show GUI");
+   _trayMenu= new QMenu;
+   QAction *act= _trayMenu->addAction("Show GUI");
    connect(act, &QAction::triggered, this, &MainToolBar::showGUI);
 
-   menu->addAction(_record_act);
-   menu->addAction(_pause_act);
-   menu->addAction(_stop_act);
-   menu->addAction(QIcon::fromTheme("media-record"), "Charge Other Project", this, SLOT(chargeOtherProject()));
-   menu->addSeparator();
+   _trayMenu->addAction(_record_act);
+   _trayMenu->addAction(_pause_act);
+   _trayMenu->addAction(_stop_act);
+   _trayMenu->addAction(_chargeOther_act);
+//   _trayMenu->addAction(QIcon::fromTheme("media-record"), "Charge Other Project", this, SLOT(chargeOtherProject()));
+   _trayMenu->addSeparator();
 
-   act= menu->addAction("Quit");
+   act= _trayMenu->addAction("Quit");
    connect(act, &QAction::triggered, G.pApp, &QApplication::quit);
 
-   _sysTray->setContextMenu(menu);
+//   _sysTray->setContextMenu(menu);
+   
+   /* Make sure systray icon is correct for the current project */
+   syncControls();
 
    _sysTray->show();
 
