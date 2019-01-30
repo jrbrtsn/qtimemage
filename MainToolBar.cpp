@@ -123,8 +123,7 @@ sysTrayActivated(QSystemTrayIcon::ActivationReason reason)
 
 
    switch(reason) {
-      /*--- Show the context menu ---*/
-      case QSystemTrayIcon::Context:
+      /*--- Left click to show the context menu ---*/
       case QSystemTrayIcon::Trigger:
          {
             QRect tray_geom(_sysTray->geometry());
@@ -135,9 +134,15 @@ sysTrayActivated(QSystemTrayIcon::ActivationReason reason)
             _trayMenu->show();
         } break;
 
+      /*---- Right click to charge another project ---*/
+      case QSystemTrayIcon::Context:
+         _chargeOther_act->trigger();
+         break;
+
       /*--- Start recording if possible ---*/
       case QSystemTrayIcon::DoubleClick:
 #if 0
+         // FIXME: I'm not sure this ever happens if Trigger is handled
          if(_record_act->isEnabled()) {
             _record_act->triggered();
          }
@@ -146,7 +151,7 @@ sysTrayActivated(QSystemTrayIcon::ActivationReason reason)
 
       /*--- Bring up the 'charge other project' dialog ---*/
       case QSystemTrayIcon::MiddleClick:
-         _chargeOther_act->trigger();
+         // TODO: What is an appropriate behavior?
          break;
 
       case QSystemTrayIcon::Unknown:
