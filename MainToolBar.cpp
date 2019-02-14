@@ -188,14 +188,11 @@ systray_install()
    _trayMenu->addAction(_pause_act);
    _trayMenu->addAction(_stop_act);
    _trayMenu->addAction(_chargeOther_act);
-//   _trayMenu->addAction(QIcon::fromTheme("media-record"), "Charge Other Project", this, SLOT(chargeOtherProject()));
    _trayMenu->addSeparator();
 
    act= _trayMenu->addAction("Quit");
    connect(act, &QAction::triggered, G.pApp, &QApplication::quit);
 
-//   _sysTray->setContextMenu(menu);
-   
    /* Make sure systray icon is correct for the current project */
    syncControls();
 

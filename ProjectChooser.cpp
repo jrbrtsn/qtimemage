@@ -142,21 +142,6 @@ selectedProject_id()
    return item->project_id();
 }
 
-#if 0
-void
-ProjectChooserTreeWidget::
-relayDoubleClickedProject(QTreeWidgetItem *item)
-/*****************************************************************************
- * User double clicked on a project.
- */
-{
-   ProjectChooserTreeWidgetItem *ptwi= static_cast<ProjectChooserTreeWidgetItem*>(item);
-
-   /* Now relay this to subscribers */
-   emit sig_doubleClickedProject(ptwi->project_id());
-}
-#endif
-
 void
 ProjectChooserTreeWidget::
 _populate_project(ProjectChooserTreeWidgetItem *parent, QVector<int64_t> &prj_id_vec)
@@ -209,6 +194,8 @@ ProjectChooser(const QString &title, QWidget *parent)
  */
 : QDialog(parent)
 {
+   /* Since this is instantiated modally, try to keep the window on top */
+   setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint);
    setWindowTitle("Project Chooser");
    setGeometry(S_geometry);
 
