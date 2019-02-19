@@ -1,19 +1,19 @@
-#include <QSystemTrayIcon>
-#include <QVBoxLayout>
-#include <QToolBar>
+#include <QCloseEvent>
 #include <QMessageBox>
 #include <QPushButton>
 #include <QStatusBar>
-#include <QCloseEvent>
+#include <QSystemTrayIcon>
+#include <QToolBar>
+#include <QVBoxLayout>
 
-#include "util.h"
-#include "ClientTabBar.h"
 #include "Client.h"
-#include "configItem.h"
-#include "qtimemage.h"
-#include "MainToolBar.h"
 #include "ClientPage.h"
+#include "ClientTabBar.h"
+#include "configItem.h"
+#include "MainToolBar.h"
 #include "MainWindow.h"
+#include "qtimemage.h"
+#include "util.h"
 
 static configRect S_geometry("MainWindow_geom", 20, 20, 600, 400);
 static configInt S_tabNdx("MainWindow_clientTab_ndx", 0);
@@ -27,6 +27,7 @@ MainWindow(QWidget * parent)
  : QMainWindow(parent)
 {
 
+   /* Set window title */
    setWindowTitle(QString("%1 - v%2").arg(G.programTitle).arg(G.programVersion));
 
    /* Listen for Global setVisible signals */

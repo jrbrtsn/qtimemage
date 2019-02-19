@@ -4,6 +4,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QToolButton>
+#include <QToolTip>
 
 #include "ClientEditor.h"
 #include "Client.h"
@@ -179,7 +180,7 @@ systray_install()
    /* Arrange to find out when user activates systray icon */
    connect(_sysTray, &QSystemTrayIcon::activated, this,  &MainToolBar::sysTrayActivated);
 
-   /* XFCE will show a menu */
+   /* Make a menu for left-click on system tray icon */
    _trayMenu= new QMenu;
    QAction *act= _trayMenu->addAction("Show GUI");
    connect(act, &QAction::triggered, this, &MainToolBar::showGUI);
@@ -600,6 +601,13 @@ chargeOtherProject()
       setCurrentProject(prj_id);
       Record();
    }
+
+   /* Fix for black-on-black tooltip issue.
+    * https://github.com/csete/gqrx/files/1752642/tool_color.txt
+    */
+   QPalette p = QToolTip::palette();
+   p.setColor(QPalette::All, QPalette::ToolTipText, Qt::white);
+   QToolTip::setPalette(p);
 
 }
 void
