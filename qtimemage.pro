@@ -6,16 +6,16 @@
 
 QT       += core gui sql network
 
-#CONFIG += qt release
-CONFIG += qt debug
+CONFIG += qt release
+#CONFIG += qt debug
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = qtimemage
 TEMPLATE = app
 
-#release: DESTDIR=build/release
-debug: DESTDIR=build/debug
+release: DESTDIR=build/release
+#debug: DESTDIR=build/debug
 
 OBJECTS_DIR = $${DESTDIR}
 MOC_DIR = $${DESTDIR}

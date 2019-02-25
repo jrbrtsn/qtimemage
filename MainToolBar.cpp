@@ -445,7 +445,22 @@ syncControls()
    _record_act->setText(QString("Start \"%1\"").arg(title));
    _pause_act->setText(QString("Pause \"%1\"").arg(title));
    _stop_act->setText(QString("Stop \"%1\"").arg(title));
-   if(_sysTray) _sysTray->setToolTip(prj->FQLongTitle());
+
+   if(_sysTray) {
+      
+      _sysTray->setToolTip(prj->FQLongTitle());
+
+#if 0
+      /* Attempt to fix the black-on-black tooltip issue.
+       * https://github.com/csete/gqrx/files/1752642/tool_color.txt
+       */
+      QPalette p = QToolTip::palette();
+//      p.setColor(QPalette::All, QPalette::ToolTipText, Qt::black);
+      p.setColor(QPalette::Inactive, QPalette::ToolTipText, Qt::white);
+      p.setColor(QPalette::Inactive, QPalette::Window, Qt::black);
+      QToolTip::setPalette(p);
+#endif
+   }
 
    switch(prj->currentState()) {
       case Project::PAUSED:
@@ -499,7 +514,7 @@ userEventsChangeNotice()
  * The user has moved some events around, so we need to adapt.
  */
 {
-   J_DBG_FN << "LOOK!";
+//   J_DBG_FN << "LOOK!";
    // TODO: search for the new recording project?
    _recording_prj_id= -1;
    syncControls();
@@ -602,12 +617,6 @@ chargeOtherProject()
       Record();
    }
 
-   /* Fix for black-on-black tooltip issue.
-    * https://github.com/csete/gqrx/files/1752642/tool_color.txt
-    */
-   QPalette p = QToolTip::palette();
-   p.setColor(QPalette::All, QPalette::ToolTipText, Qt::white);
-   QToolTip::setPalette(p);
 
 }
 void
