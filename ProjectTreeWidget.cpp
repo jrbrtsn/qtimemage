@@ -309,7 +309,7 @@ _refreshTimes(
  */
 {
    ProjectTreeWidgetItem *item; 
-   int secs;
+   int decihours;
    int64_t prj_id;
 
    /* Search these children, recurse */
@@ -317,17 +317,17 @@ _refreshTimes(
       item= parent->child(i);
       prj_id= item->project_id();
 
-      secs= dayRpt.cumulativeProjectSecs(prj_id);
-      item->setText(ProjectTreeWidgetItem::TODAY_COL, sec2hrStr(secs));
+      decihours= dayRpt.cumulativeProjectDecihours(prj_id);
+      item->setText(ProjectTreeWidgetItem::TODAY_COL, decihour2hrStr(decihours));
 
-      secs= weekRpt.cumulativeProjectSecs(prj_id);
-      item->setText(ProjectTreeWidgetItem::WEEK_COL, sec2hrStr(secs));
+      decihours= weekRpt.cumulativeProjectDecihours(prj_id);
+      item->setText(ProjectTreeWidgetItem::WEEK_COL, decihour2hrStr(decihours));
 
-      secs= monthRpt.cumulativeProjectSecs(prj_id);
-      item->setText(ProjectTreeWidgetItem::MONTH_COL, sec2hrStr(secs));
+      decihours= monthRpt.cumulativeProjectDecihours(prj_id);
+      item->setText(ProjectTreeWidgetItem::MONTH_COL, decihour2hrStr(decihours));
 
-      secs= yearRpt.cumulativeProjectSecs(prj_id);
-      item->setText(ProjectTreeWidgetItem::YEAR_COL, sec2hrStr(secs));
+      decihours= yearRpt.cumulativeProjectDecihours(prj_id);
+      item->setText(ProjectTreeWidgetItem::YEAR_COL, decihour2hrStr(decihours));
 
       _refreshTimes(item, dayRpt, weekRpt, monthRpt, yearRpt);
    }

@@ -41,6 +41,16 @@ run(int64_t project_id, const QDateTime &begin, const QDateTime &end)
    return 0;
 }
 
+int
+ProjectReport::
+decihours() const
+/*************************************************************************
+ * Round busySecs to decihours.
+ */
+{
+   return lround((double)this->busySecs/360.);
+}
+
 /***********************************************************************************/
 /************************ ClientReport *********************************************/
 /***********************************************************************************/
@@ -79,7 +89,7 @@ run(int64_t client_id, const QDateTime &begin, const QDateTime &end)
 
 int
 ClientReport::
-cumulativeSecs() const
+cumulativeDecihours() const
 /*************************************************************************
  * Total of all projects for this client.
  */
@@ -87,37 +97,38 @@ cumulativeSecs() const
    int rtn= 0;
    ProjectReport *rpt;
    foreach(rpt, this->rpt_hash) {
-      rtn += rpt->busySecs;
+
+      rtn += rpt->decihours();
    }
    return rtn;
 }
 
 int
 ClientReport::
-projectSecs(int64_t prj_id) const
+projectDecihours(int64_t prj_id) const
 /*************************************************************************
- * Retrieve the busySec for a single project.
+ * Retrieve the decihours for a single project.
  */
 {
    const ProjectReport *rpt= this->rpt_hash[prj_id];
    Q_ASSERT(rpt);
-   return rpt->busySecs;
+   return rpt->decihours();
 }
 
 int
 ClientReport::
-cumulativeProjectSecs(int64_t prj_id) const
+cumulativeProjectDecihours(int64_t prj_id) const
 /*************************************************************************
- * Retrieve the cumulative seconds for a project and all of it's subprojects
+ * Retrieve the cumulative decihours for a project and all of it's subprojects
  */
 {
    int rtn= 0;
    const ProjectReport *rpt= this->rpt_hash[prj_id];
    Q_ASSERT(rpt);
-   rtn += rpt->busySecs;
+   rtn += rpt->decihours();
    QHash<int64_t, int64_t>::const_iterator i = this->child_hash.find(prj_id);
    while (i != this->child_hash.end() && i.key() == prj_id) {
-      rtn += cumulativeProjectSecs(i.value());
+      rtn += cumulativeProjectDecihours(i.value());
       ++i;
    }
 
@@ -142,7 +153,7 @@ activeProjectIds(QMap<QString,ProjectReport*> &prjMap) const
       prj= G.projectTable[prj_id];
       Q_ASSERT(prj);
 //J_DBG_FN << "prj_id= " << prj_id << ", busySecs= " << pr->busySecs;
-      if(!cumulativeProjectSecs(prj_id)) continue;
+      if(!cumulativeProjectDecihours(prj_id)) continue;
       prjMap[prj->longTitle()]= pr;
    }
 }
@@ -275,7 +286,7 @@ showReport(ClientReport &rpt)
             .arg(rpt.end_dt.date().toString());
    _html << "";
 
-   _html << QString("<h3>Cumulative hours, all projects: %1</h3>\n").arg(sec2hrStr(rpt.cumulativeSecs()));
+   _html << QString("<h3>Cumulative hours, all projects: %1</h3>\n").arg(decihour2hrStr(rpt.cumulativeDecihours()));
 
    _html << "<table border=1 cellpadding=5>\n";
    _html << "<tr> <th></th> <th colspan=2>Time</th> </tr>\n";
@@ -289,8 +300,8 @@ showReport(ClientReport &rpt)
 
       _html << "<tr>"
             << "<td>" << i.key().toHtmlEscaped() << "</td>"
-            << "<td align=right>" << sec2hrStr(pr->busySecs) << "</td>"
-            << "<td align=right>" << sec2hrStr(rpt.cumulativeProjectSecs(pr->prj_id)) << "</td>"
+            << "<td align=right>" << decihour2hrStr(pr->decihours()) << "</td>"
+            << "<td align=right>" << decihour2hrStr(rpt.cumulativeProjectDecihours(pr->prj_id)) << "</td>"
             << "</tr>\n";
 
    }

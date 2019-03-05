@@ -267,19 +267,19 @@ refreshTimes()
 
    _project.trw->refreshTimes(dayRpt, wkRpt, moRpt, yrRpt);
 
-   int secs;
+   int decihours;
 
-   secs= dayRpt.cumulativeSecs();
-   _client.timeToday_lbl->setText(sec2hrStr(secs));
+   decihours= dayRpt.cumulativeDecihours();
+   _client.timeToday_lbl->setText(decihour2hrStr(decihours));
 
-   secs= wkRpt.cumulativeSecs();
-   _client.timeWeek_lbl->setText(sec2hrStr(secs));
+   decihours= wkRpt.cumulativeDecihours();
+   _client.timeWeek_lbl->setText(decihour2hrStr(decihours));
 
-   secs= moRpt.cumulativeSecs();
-   _client.timeMonth_lbl->setText(sec2hrStr(secs));
+   decihours= moRpt.cumulativeDecihours();
+   _client.timeMonth_lbl->setText(decihour2hrStr(decihours));
 
-   secs= yrRpt.cumulativeSecs();
-   _client.timeYear_lbl->setText(sec2hrStr(secs));
+   decihours= yrRpt.cumulativeDecihours();
+   _client.timeYear_lbl->setText(decihour2hrStr(decihours));
 
 }
 

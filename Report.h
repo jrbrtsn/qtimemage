@@ -20,6 +20,8 @@ struct ProjectReport {
    int64_t prj_id,
            parent_id;
 
+   int decihours() const;
+
    int busySecs;
 
    int run(int64_t project_id, const QDateTime &begin, const QDateTime &end);
@@ -35,12 +37,16 @@ struct ClientReport {
    ClientReport(int64_t client_id, const QDateTime &begin, const QDateTime &end)
    { run(client_id, begin, end);}
 
-   int cumulativeProjectSecs(int64_t prj_id) const;
-   int projectSecs(int64_t prj_id) const;
+//   int cumulativeProjectSecs(int64_t prj_id) const;
+   int cumulativeProjectDecihours(int64_t prj_id) const;
+
+//   int projectSecs(int64_t prj_id) const;
+   int projectDecihours(int64_t prj_id) const;
 
    void activeProjectIds(QMap<QString,ProjectReport*> &prjMap) const;
 
-   int cumulativeSecs() const;
+//   int cumulativeSecs() const;
+   int cumulativeDecihours() const;
 
    int64_t client_id;
 

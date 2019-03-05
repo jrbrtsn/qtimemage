@@ -2,13 +2,13 @@
 #include "util.h"
 
 const char*
-sec2hrStr(int secs)
+decihour2hrStr(int decihours)
 /***********************************************************
  * Convert seconds into an hour.decihour string.
  */
 {
    static char buf[16];
-   double hours= (double)secs/3600.;
+   double hours= (double)decihours/10.;
    ::snprintf(buf, sizeof(buf-1), "%.1lf", hours);
    return buf;
 }

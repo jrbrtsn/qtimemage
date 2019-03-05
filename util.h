@@ -7,7 +7,7 @@
 #define J_DBG_FN J_DBG << __FUNCTION__ << "() "
 
 const char*
-sec2hrStr(int secs);
+decihour2hrStr(int decihour);
 /***********************************************************
  * Convert seconds into an hour.decihour string.
  */
