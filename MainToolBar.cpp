@@ -130,7 +130,8 @@ sysTrayActivated(QSystemTrayIcon::ActivationReason reason)
             QRect tray_geom(_sysTray->geometry());
             QPoint tray_lrc(tray_geom.x() + tray_geom.width(), tray_geom.y() + tray_geom.height());
             QSize menu_sz= _trayMenu->sizeHint();
-            QPoint menu_ulc(tray_lrc.x() - menu_sz.width(), tray_lrc.y());
+            int x= std::max(0, tray_lrc.x() - menu_sz.width());
+            QPoint menu_ulc(x, tray_lrc.y());
             _trayMenu->move(menu_ulc);
             _trayMenu->show();
         } break;

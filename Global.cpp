@@ -47,7 +47,7 @@ Global()
  * Initialize our global data structure.
  */ 
 : programTitle(tr("qTimeMage Time Card System"))
-, programVersion("0.6.3")
+, programVersion("0.6.4")
 , clientTable(db)
 , projectTable(db)
 , eventTable(db)
