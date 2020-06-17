@@ -53,7 +53,20 @@ public:
    DbTable(const DbTable&)= delete;
    DbTable& operator=(const DbTable&)= delete;
 
-   int fetchAll(DbRec * rtnVec[], unsigned vecSz, const QString & sql_tail) const;
+   int fetchAll(
+            DbRec * rtnVec[],
+            unsigned vecSz,
+            const QString & sql_tail
+         ) const;
+
+   // Recursive CTE.
+   int fetchAll_r(
+            DbRec * rtnVec[],
+            unsigned vecSz,
+            const QString &sql_pfx,
+            const char *tmp_tbl,
+            const char *tmp_pKey
+         ) const;
 
    inline const DbField *DbField_arr() const {
       return _DbField_arr;

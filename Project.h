@@ -35,6 +35,10 @@ public:
 
    int fetchAll(QVector<int64_t> &idVec, const QString & sql_tail = QString());
 
+   int fetchAfter(QVector<int64_t> &idVec, const QDateTime &when);
+
+   int fetchClientAfter(QVector<int64_t> &idVec, int64_t client_id, const QDateTime &when);
+
    /* Create new instance of Project, return it cast to DbRec */
    virtual DbRec* factory() const;
 

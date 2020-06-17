@@ -92,11 +92,14 @@ MainToolBar(QWidget * parent)
    _trayTimer= new QTimer(this);
    connect(_trayTimer, SIGNAL(timeout()), this, SLOT(systray_install()));
    _trayTimer->setSingleShot(true);
-   _trayTimer->setInterval(100);
+   _trayTimer->setInterval(500);
    _trayTimer->start();
 
    /* Miscellaneous actions */
    _chargeOther_act= addAction(QIcon::fromTheme("media-record"), "Charge Other Project", this, SLOT(chargeOtherProject()));
+
+   // FIXME!
+//   _setMinVisDate_act= addAction(QIcon::fromTheme("gnome-panel-clock"), "Set Minimum Visibility Date", this, SLOT(setMinVisDate()));
 }
 
 MainToolBar::
@@ -617,9 +620,19 @@ chargeOtherProject()
       setCurrentProject(prj_id);
       Record();
    }
-
-
 }
+
+void
+MainToolBar::
+setMinVisDate()
+/*****************************************************************************
+ * Let user choose a minimum visibility date for clients/projects
+ */
+{
+
+   // FIXME!
+}
+
 void
 MainToolBar::
 createClient()

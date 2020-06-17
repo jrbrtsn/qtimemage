@@ -109,8 +109,10 @@ ProjectChooserTreeWidget(QWidget *parent)
    item->setTextAlignment(ProjectChooserTreeWidgetItem::TITLE_COL, Qt::AlignHCenter);
 
    QVector<int64_t> prj_id_vec;
-   int rtn = G.projectTable.fetchAll(prj_id_vec);
-   if (rtn < 0) qFatal("Project::fetchAll() failed!");
+   { /* Get only projects after min_date */
+      int rtn = G.projectTable.fetchAfter(prj_id_vec, G.minShowDateTime);
+      if (rtn < 0) qFatal("Project::fetchAfter() failed!");
+   }
 
    _populate_project(NULL, prj_id_vec);
 

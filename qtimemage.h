@@ -52,6 +52,8 @@ class Global : public QObject {
    Project_Table projectTable;
    Event_Table eventTable;
 
+   QDateTime minShowDateTime;
+
 };
 
 extern Global G;

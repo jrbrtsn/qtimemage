@@ -409,8 +409,12 @@ setClient(int64_t client_id)
    if(-1 == _client_id) return;
 
    QVector<int64_t> prj_id_vec;
-   int rtn = G.projectTable.fetchAll(prj_id_vec, QString("WHERE client_id=%1").arg(_client_id));
-   if (rtn < 0) qFatal("Project::fetchAll() failed!");
+   { /* Fetch projects to show in widget tree */
+//      QString sql_tail= QString("WHERE client_id=%1 AND project_id IS NULL OR id IN ( SELECT project_id FROM event_tbl WHERE when_ts > %2 )").arg(_client_id).arg(G.minShowDateTime.toSecsSinceEpoch());
+      int rtn = G.projectTable.fetchClientAfter(prj_id_vec, client_id, G.minShowDateTime);
+//      int rtn = G.projectTable.fetchAll(prj_id_vec, QString("WHERE client_id=%1").arg(_client_id));
+      if (rtn < 0) qFatal("Project::fetchAll() failed!");
+   }
 
    _populate_project(NULL, prj_id_vec);
 

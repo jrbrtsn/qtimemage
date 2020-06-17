@@ -38,6 +38,7 @@ private slots:
    void editClient();
    void deleteClient();
    void relayCurrentProject(int ndx);
+   void setMinVisDate();
 
    void client_update(int64_t);
    void client_remove(int64_t);
@@ -58,7 +59,8 @@ private:
           *_stop_act,
           *_editClient_act,
           *_deleteClient_act,
-          *_chargeOther_act;
+          *_chargeOther_act,
+          *_setMinVisDate_act;
 
    ProjectComboBox *_project_cb;
 

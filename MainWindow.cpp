@@ -167,13 +167,16 @@ populate_clients()
 
    QVector<int64_t> client_id_vec;
 
-   /* Fetch all client records */
-   int rtn = G.clientTable.fetchAll(client_id_vec, "ORDER BY acronym ASC");
-   if (rtn < 0) qFatal("Client_Table::fetchAll() failed!");
+   { /* Fetch all client records */
+//      QString sql_tail= QString("WHERE id IN ( SELECT client_id FROM project_tbl WHERE id IN ( SELECT project_id FROM event_tbl WHERE when_ts > %1 ) ) ORDER BY acronym ASC").arg(G.minShowDateTime.toSecsSinceEpoch());
+      int rtn = G.clientTable.fetchAfter(client_id_vec, G.minShowDateTime);
+//      int rtn = G.clientTable.fetchAll(client_id_vec, "ORDER BY acronym ASC");
+      if (rtn < 0) qFatal("Client_Table::fetchAll() failed!");
+   }
 
    /* A tab for each client */
    Client *cl;
-//   Project *prj;
+
    int64_t client_id, prj_id;
    QString acronym;
 

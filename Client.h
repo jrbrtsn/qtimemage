@@ -31,6 +31,8 @@ public:
   /* Fetch a group of records */
    int fetchAll(QVector<int64_t> &idVec, const QString & sql_tail = QString());
 
+   int fetchAfter(QVector<int64_t> &idVec, const QDateTime &when);
+
    /* Create new instance of Client, return it cast to DbRec */
    virtual DbRec* factory() const;
 

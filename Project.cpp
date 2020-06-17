@@ -97,13 +97,117 @@ factory() const
 
 int
 Project_Table::
+fetchClientAfter(QVector<int64_t> &idVec, int64_t client_id, const QDateTime &when)
+/****************************************************************************
+ * Fetch all Project rows with associated events after when,
+ * and matching client_id.
+ */
+{
+   int rtn = EOF - 1;
+   unsigned vecSz= 10000;
+   Project *prj;
+   int64_t id;
+   DbRec *DbRec_vec[vecSz];
+
+
+
+   QString sql_pfx= QString(
+"WITH RECURSIVE tmp00(_id, _project_id) AS ("
+" SELECT DISTINCT p.id, p.project_id"
+   " FROM"
+      " event_tbl ev,"
+      " project_tbl p"
+   " WHERE ev.when_ts > %1"
+   " AND p.id = ev.project_id"
+   " AND p.client_id = %2"
+" UNION ALL"
+" SELECT DISTINCT p.id, p.project_id"
+   " FROM"
+      " tmp00,"
+      " project_tbl p"
+   " WHERE p.id = tmp00._project_id )"
+            )
+      .arg(when.toSecsSinceEpoch())
+      .arg(client_id);
+
+   if ((rtn = DbTable::fetchAll_r(DbRec_vec, vecSz, sql_pfx, "tmp00", "_id")) < 0) goto abort;
+
+   /* Cast pointers back to Project */
+   for (int i = 0; i < rtn; ++i) {
+      prj= static_cast <Project*>(DbRec_vec[i]);
+      id= prj->id();
+      idVec.append(id);
+      if(_hash.contains(id))
+         delete prj;
+      else
+         _hash[id]= prj;
+   }
+
+ abort:
+   return rtn;
+}
+
+int
+Project_Table::
+fetchAfter(
+      QVector<int64_t> &idVec,
+      const QDateTime &when
+      )
+/*****************************************************************
+ * Fetch all Project rows with associated events after when,
+ and matching sql_tail.
+ */
+{
+   int rtn = EOF - 1;
+   unsigned vecSz= 10000;
+   Project *prj;
+   int64_t id;
+   DbRec *DbRec_vec[vecSz];
+
+
+
+   QString sql_pfx= QString(
+"WITH RECURSIVE tmp00(_id, _project_id) AS ("
+" SELECT DISTINCT p.id, p.project_id\n"
+   " FROM\n"
+      " event_tbl ev,"
+      " project_tbl p"
+   " WHERE ev.when_ts > %1"
+   " AND p.id = ev.project_id"
+" UNION ALL"
+" SELECT DISTINCT p.id, p.project_id"
+   " FROM"
+      " tmp00,"
+      " project_tbl p"
+   " WHERE p.id = tmp00._project_id)"
+            ).arg(when.toSecsSinceEpoch());
+
+   if ((rtn = DbTable::fetchAll_r(DbRec_vec, vecSz, sql_pfx, "tmp00", "_id")) < 0) goto abort;
+
+   /* Cast pointers back to Project */
+   for (int i = 0; i < rtn; ++i) {
+      prj= static_cast <Project*>(DbRec_vec[i]);
+      id= prj->id();
+      idVec.append(id);
+      if(_hash.contains(id))
+         delete prj;
+      else
+         _hash[id]= prj;
+   }
+
+ abort:
+   return rtn;
+}
+
+int
+Project_Table::
 fetchAll(QVector<int64_t> &idVec, const QString & sql_tail)
 /*****************************************************************
  * Fetch all Project rows matching sql_tail.
  */
 {
    int rtn = EOF - 1;
-   unsigned vecSz= 1000;
+   unsigned vecSz= 10000;
    Project *prj;
    int64_t id;
    DbRec *DbRec_vec[vecSz];

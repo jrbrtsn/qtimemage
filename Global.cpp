@@ -47,10 +47,11 @@ Global()
  * Initialize our global data structure.
  */ 
 : programTitle(tr("qTimeMage Time Card System"))
-, programVersion("0.6.4")
+, programVersion("0.7.0")
 , clientTable(db)
 , projectTable(db)
 , eventTable(db)
+, minShowDateTime(QDateTime::fromString("2020-01-01", Qt::ISODate))
 {
   
 #ifdef _WIN32

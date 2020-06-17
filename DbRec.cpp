@@ -3,6 +3,7 @@
 #include <QDateTime>
 #include "qtimemage.h"
 #include "DbRec.h"
+#include "util.h"
 
 const char*
 DbField::
@@ -134,6 +135,93 @@ fetchAll(DbRec * rtnVec[], unsigned vecSz, const QString & sql_tail) const
    rtn = nLoaded;
 
  abort:
+   /* Clean up on the way out */
+   if (rtn < 0) {
+      for (int i = 0; i < nLoaded; ++i) {
+	 delete rtnVec[i];
+      }
+   }
+   return rtn;
+}
+
+int
+DbTable::
+fetchAll_r(
+      DbRec * rtnVec[],
+      unsigned vecSz,
+      const QString &sql_pfx,
+      const char *tmp_tbl,
+      const char *tmp_pKey
+      ) const
+/*******************************************************************************
+ * Fetch all records from a table, using WITH prefix
+ * into a vector of DbRec pointers.
+ * returns:
+ *      EOF  if vecSz is too small
+ *      EOF-1  other errors
+ *      Number of records retrieved, including 0.
+ */
+{
+   int nLoaded = 0, rtn = EOF - 1;
+
+   /* Form the query string */
+   QString qstr= sql_pfx + " SELECT DISTINCT ";
+   for (const DbField * f = _DbField_arr; f->colName; ++f) {
+
+      if (f != _DbField_arr)
+	 qstr.append(", ");
+
+      qstr.append(_name);
+      qstr.append('.');
+      qstr.append(f->colName);
+      qstr.append(" AS ");
+      qstr.append(f->colName);
+   }
+
+   qstr.append(
+     QString(" FROM %1, %2 WHERE %2.%3 = %1.%4")
+      .arg(tmp_tbl)
+      .arg(_name)
+      .arg(_pKey->colName)
+      .arg(tmp_pKey)
+         );
+
+J_DBG_FN << qstr;
+
+   /* Prepare query */
+   QSqlQuery q(_db);
+   if (!q.prepare(qstr))
+      Q_ASSERT(0);
+
+   /* Perform query */
+   if (!q.exec()) {
+      qDebug() << "Query \"" << qstr << "\" returned error: " << q.lastError().
+	  text();
+      goto abort;
+   }
+
+   Q_ASSERT(q.isSelect());
+
+   /* SQLite driver doesn't know how many rows are in result, so we count
+    * as we load new objects with data.
+    */
+   for (nLoaded = 0; q.next(); ++nLoaded) {
+      DbRec *obj;
+      if (nLoaded == (int)vecSz) {
+	 rtn = EOF;
+	 goto abort;
+      }
+      Q_ASSERT(q.isValid());
+      obj = factory();
+      rtnVec[nLoaded] = obj;
+      if (obj->fetch(q, _DbField_arr)) Q_ASSERT(0);
+   }
+
+//   J_DBG_FN << "nLoaded=" << nLoaded;
+   rtn = nLoaded;
+
+ abort:
+
    /* Clean up on the way out */
    if (rtn < 0) {
       for (int i = 0; i < nLoaded; ++i) {

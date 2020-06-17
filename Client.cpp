@@ -117,6 +117,65 @@ fetchAll(QVector<int64_t> &idVec, const QString & sql_tail)
    return rtn;
 }
 
+int
+Client_Table::
+fetchAfter(
+      QVector<int64_t> &idVec,
+      const QDateTime &when
+      )
+/*****************************************************************
+ * Fetch all Client rows with associated events after when.
+ */
+{
+   int rtn = EOF - 1;
+   unsigned vecSz= 1000;
+   Client *cl;
+   int64_t id;
+   DbRec *DbRec_vec[vecSz];
+
+   QString sql_pfx= QString(
+"WITH RECURSIVE tmp00(_id, _project_id) AS ("
+" SELECT DISTINCT p.id, p.project_id"
+   " FROM"
+      " event_tbl ev,"
+      " project_tbl p"
+   " WHERE ev.when_ts > %1"
+   " AND p.id = ev.project_id"
+" UNION ALL"
+" SELECT DISTINCT p.id, p.project_id"
+   " FROM"
+      " tmp00,"
+      " project_tbl p"
+   " WHERE p.id = tmp00._project_id )"
+
+", tmp01(_id) AS ("
+" SELECT DISTINCT c.id"
+   " FROM"
+      " tmp00,"
+      " project_tbl p,"
+      " client_tbl c"
+   " WHERE p.id = tmp00._id"
+   " AND c.id = p.client_id )"
+      )
+      .arg(when.toSecsSinceEpoch());
+
+   if ((rtn = DbTable::fetchAll_r(DbRec_vec, vecSz, sql_pfx, "tmp01", "_id")) < 0) goto abort;
+
+   /* Cast pointers back to Client */
+   for (int i = 0; i < rtn; ++i) {
+      cl= static_cast <Client*>(DbRec_vec[i]);
+      id= cl->id();
+      idVec.append(id);
+      if(_hash.contains(id))
+         delete cl;
+      else
+         _hash[id]= cl;
+   }
+
+ abort:
+   return rtn;
+}
+
 void
 Client_Table::
 emit_cast_sig_insert(DbRec *dbr)
